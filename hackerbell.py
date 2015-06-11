@@ -4,6 +4,7 @@ monkey.patch_all()
 import urllib2
 import requests, json
 import util
+HACKERBELL_KEYS = ['python', 'amazon', 'nginx', 'aws', 'china', 'amazon', 'performance', 'language', 'hack']
 HACKERBELL_RECEIVER = 'weiyi@papayamobile.com'
 HACKERBELL_SNIPPET =""" 
 <h4 style="margin:0;margin-bottom:6px;margin-top:6px">
@@ -39,10 +40,10 @@ def task():
     notify(body=body)
 
 def task1():
-    task_top_key(keys=['python', 'nginx', 'google', 'china', 'facebook'])
+    task_top_key(keys=HACKERBELL_KEYS)
 
 def task2():
-    task_new_key(keys=['python', 'nginx', 'google', 'china', 'facebook'])
+    task_new_key(keys=HACKERBELL_KEYS)
 
 def fetch_top(n=500):
     top = fetch_top_ids()[:n]
