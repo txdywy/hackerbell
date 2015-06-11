@@ -1,3 +1,7 @@
+import gevent
+from gevent import monkey
+monkey.patch_all()
+import urllib2
 import requests, json
 import util
 HACKERBELL_RECEIVER = 'weiyi@papayamobile.com'
@@ -6,21 +10,22 @@ HACKERBELL_SNIPPET ="""
 <a style="font-size:14px;line-height:22px;font-weight:bold;text-decoration:none;color:#259;border:none;outline:none" href="%s" target="_blank">%s</a>&nbsp;&nbsp;</h4>
 """
 
-def fetcc_top(n=10):
+def fetch_top_ids():
     r = requests.get('https://hacker-news.firebaseio.com/v0/topstories.json')
     top = json.loads(r.content)
-    items = []
-    for id in top[:n]:
-        r = requests.get('https://hacker-news.firebaseio.com/v0/item/%s.json' % id)
-        i = json.loads(r.content)
-        items.append(i)
-    return items
+    return top
 
+def fetch_new_ids():
+    r = requests.get('https://hacker-news.firebaseio.com/v0/newstories.json')
+    new = json.loads(r.content)
+    return new
 
-def notify(body='N/A'):
-    title = '[Hackerbell]Hacker News Top 10' 
+def fetch_story(id):
+    r = urllib2.urlopen('https://hacker-news.firebaseio.com/v0/item/%s.json' % id).read()
+    return json.loads(r)
+
+def notify(title='[Hackerbell]Hacker News Top 10', body='N/A'): 
     util.send_email(title, body, HACKERBELL_RECEIVER)
-
 
 def wrap(items=None):
     if not items:
@@ -28,10 +33,51 @@ def wrap(items=None):
     body = ''.join([HACKERBELL_SNIPPET % (i['url'], i['title'] + ' [score: %s]' % i['score']) for i in items])
     return body
 
-
 def task():
-    items = fetcc_top()
+    items = fetch_top(10)
     body = wrap(items)
-    notify(body)
+    notify(body=body)
 
+def task1():
+    task_top_key(keys=['python', 'nginx', 'google', 'china', 'facebook'])
 
+def task2():
+    task_new_key(keys=['python', 'nginx', 'google', 'china', 'facebook'])
+
+def fetch_top(n=500):
+    top = fetch_top_ids()[:n]
+    jobs = [gevent.spawn(fetch_story, id) for id in top]
+    gevent.wait(jobs)
+    return [j.value for j in jobs]
+
+def fetch_new(n=500):
+    top = fetch_new_ids()[:n]
+    jobs = [gevent.spawn(fetch_story, id) for id in top]
+    gevent.wait(jobs)
+    return [j.value for j in jobs]
+    
+def task_top_key(keys=None):
+    items = fetch_top()
+    items = filter_keys(items, keys)
+    body = wrap(items)
+    notify(title='[Hackerbell]Top keys', body=body)
+
+def task_new_key(keys=None):
+    items = fetch_new()
+    items = filter_keys(items, keys)
+    body = wrap(items)
+    notify(title='[Hackerbell]New keys', body=body)
+
+def filter_keys(items, keys):
+    if not keys:
+        return items
+    keys = set(keys)
+    r = [i for i in items if _check(i['title'], keys)]
+    return r
+
+def _check(title, keys):
+    title =title.lower()
+    for k in keys:
+        if k in title:
+            return True
+    return False
