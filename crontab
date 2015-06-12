@@ -1,1 +1,7 @@
-0 0 * * * cd ~/hackerbell/; sh run.sh 
+0 0 * * * cd ~/hackerbell/; sh run.sh
+0 5 * * * cd ~/hackerbell/; sh run.sh
+0 8 * * * cd ~/hackerbell/; sh run.sh
+0 */8 * * * cd ~/hackerbell/; sh top.sh
+0 */8 * * * cd ~/hackerbell/; sh new.sh
+0 */1 * * * cd ~/hackerbell/; sh zh_new.sh
+0 */2 * * * cd ~/hackerbell/; sh zh_top.sh
