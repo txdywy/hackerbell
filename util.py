@@ -2,7 +2,7 @@ import smtplib
 import email.utils
 from email.mime.text import MIMEText
 import functools
-SUPPORT = 'support@sandbox.appflood.com'
+SUPPORT = 'support@alancer.ml'
 
 def makes(s):
     if type(s)==unicode:

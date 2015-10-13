@@ -7,7 +7,7 @@ import util
 HACKERBELL_JOBS = ['job', 'hire', 'hiring', 'full-time', 'full time']
 HACKERBELL_KEYS = ['python', 'amazon', 'nginx', 'aws', 'china', 'amazon', 'performance', 'language', 'hack']
 HACKERBELL_RECEIVER = 'weiyi@papayamobile.com'
-HACKERBELL_GUEST = 'haozhang85@gmail.com'
+HACKERBELL_GUEST = 'weiyi@papayamobile.com'#'haozhang85@gmail.com'
 HACKERBELL_SNIPPET =""" 
 <h4 style="margin:0;margin-bottom:6px;margin-top:6px">
 <a style="font-size:14px;line-height:22px;font-weight:bold;text-decoration:none;color:#259;border:none;outline:none" href="%s" target="_blank">%s</a>&nbsp;&nbsp;</h4>
